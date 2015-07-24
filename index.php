@@ -235,6 +235,13 @@ and open the template in the editor.
             
             $name = $author->get("name");
             $code = $unit->get("code");
+            //array:
+            $imageArray = $result->get("mediaFiles");
+            $image1 = $imageArray[0];
+            
+            $url = $image1->getURL();
+//            echo $url;
+            
             ?>
             <div class="container clearfix">
                 <div class="eleven columns m-bot-25">
@@ -264,7 +271,12 @@ and open the template in the editor.
                                     </div>
                                 </div>
                                 <div class="blog-item-text-container">
-                                    <p><?php echo $content; ?></p>
+                                    <p><?php echo $content; 
+                                    echo "<img src =\"";
+                                    echo $url;
+                                    echo "\"></img>";
+                                    ?></p>
+                                    
 
                                 </div>
                                 <div class="lp-r-m-container right">
