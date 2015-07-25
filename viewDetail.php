@@ -27,13 +27,12 @@ if (isset($_POST["logout"])) {
     $currentUser = ParseUser::getCurrentUser();
     echo "<script language=JavaScript> location.replace(index.php);</script>";
 }
+
+$postID = $_POST['postID'];
+//echo $postID;
 ?>
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
+
 <html>
     <head>
         <title>Monash Survival Guide</title>
@@ -73,45 +72,8 @@ and open the template in the editor.
 
     </head>
     <body>
-
-
         <div id="wrap" class="boxed">
             <div class="grey-bg"> <!-- Grey bg  -->	
-                <!--[if lte IE 7]>
-                <div id="ie-container">
-                        <div id="ie-cont-close">
-                                <a href='#' onclick='javascript&#058;this.parentNode.parentNode.style.display="none"; return false;'><img src='images/ie-warning-close.jpg' style='border: none;' alt='Close'></a>
-                        </div>
-                        <div id="ie-cont-content" >
-                                <div id="ie-cont-warning">
-                                        <img src='images/ie-warning.jpg' alt='Warning!'>
-                                </div>
-                                <div id="ie-cont-text" >
-                                        <div id="ie-text-bold">
-                                                You are using an outdated browser
-                                        </div>
-                                        <div id="ie-text">
-                                                For a better experience using this site, please upgrade to a modern web browser.
-                                        </div>
-                                </div>
-                                <div id="ie-cont-brows" >
-                                        <a href='http://www.firefox.com' target='_blank'><img src='images/ie-warning-firefox.jpg' alt='Download Firefox'></a>
-                                        <a href='http://www.opera.com/download/' target='_blank'><img src='images/ie-warning-opera.jpg' alt='Download Opera'></a>
-                                        <a href='http://www.apple.com/safari/download/' target='_blank'><img src='images/ie-warning-safari.jpg' alt='Download Safari'></a>
-                                        <a href='http://www.google.com/chrome' target='_blank'><img src='images/ie-warning-chrome.jpg' alt='Download Google Chrome'></a>
-                                </div>
-                        </div>
-                </div>
-                <![endif]-->
-
-                <!-- HEADER -->
-                <!--                <div class="sixteen columns">
-                                    <form>
-                                        <input type="submit" value="Sign in" class="signin" name="submit">
-                                    </form>
-                                </div>-->
-
-
                 <header id="header" >
                     <div class="container clearfix">
                         <div class="sixteen columns">
@@ -223,26 +185,31 @@ and open the template in the editor.
             <!-- CONTENT -->
             <?php
             $query = new ParseQuery("Post");
-            $result = $query->first();
+            try {
+                $postResult = $query->get($postID);
+            } catch (ParseException $ex) {
+                // The object was not retrieved successfully.
+                // error is a ParseException with an error code and message.
+            }
+
             
-            $title = $result->get("title");
-            $content = $result->get("content");
-            $author = $result->get("author");
+            $title = $postResult->get("title");
+            $content = $postResult->get("content");
+            $author = $postResult->get("author");
             $author->fetch();
-            $unit = $result->get("unit");
+            $unit = $postResult->get("unit");
             $unit->fetch();
-            
+//            
             $name = $author->get("name");
             $code = $unit->get("code");
-            //array:
-            $imageArray = $result->get("mediaFiles");
+//            //array:
+            $imageArray = $postResult->get("mediaFiles");
             $image1 = $imageArray[0];
+            
             $url = $image1->getURL();
-            
-            $postID = $result->getObjectId();
 //            echo $url;
-            
             ?>
+            <!-- CONTENT -->
             <div class="container clearfix">
                 <div class="eleven columns m-bot-25">
                     <!-- BLOG ITEM -->
@@ -254,10 +221,17 @@ and open the template in the editor.
                                         <div class="blog-item-date">21</div>
                                         <div class="blog-item-mounth">OCT</div>
                                     </div>
+                                  
 
-                                </div>
-
-                                <div class="blog-item-caption-container">
+<!--                                <div class="view view-first">
+                                    <img src="images/content/post-2-1.jpg" alt="Ipsum" >
+                                    <div class="mask"></div>	
+                                    <div class="abs">
+                                        <a href="images/content/post-2-1.jpg" class="lightbox zoom info"></a><a href="blog-single.html" class="link info"></a>
+                                    </div>	
+                                </div>-->
+                            </div>	
+                                                            <div class="blog-item-caption-container">
                                     <a class="a-invert" href="blog-single.html" ><span class="bold"><?php echo $title; ?></span></a>
                                     <div class="lp-item-container-border clearfix">
                                         <div class="blog-info-container">
@@ -270,7 +244,8 @@ and open the template in the editor.
                                         </div>
                                     </div>
                                 </div>
-                                <div class="blog-item-text-container">
+                        </div>
+                        <div class="blog-item-text-container">
                                     <p><?php echo $content; 
                                     echo "<img src =\"";
                                     echo $url;
@@ -279,130 +254,181 @@ and open the template in the editor.
                                     
 
                                 </div>
-                                <div class="lp-r-m-container right">
-                                    <form method="POST" action="viewDetail.php">
-                                        <input type="hidden" name="postID" value="<?php echo $postID ?>" />
-                                        <input type="submit"  class="button medium r-m-plus r-m-full" value="READ MORE" />
-                                    </form> 
+
                                 </div>
-                            </div>	
-                        </div>
 
                     </div>
-                    <!-- BLOG ITEM -->
-                    <div class="blog-item m-bot-35 clearfix">
-                        <div class="hover-item">
-                            <div class="clearfix">
-                                <div class="blog-item-date-inf-container left">
-                                    <div class="blog-item-date-cont">
-                                        <div class="blog-item-date">17</div>
-                                        <div class="blog-item-mounth">OCT</div>
-                                    </div>
-                                    <div>
-                                        <div class="blog-item-category-img">
-                                            <img src="images/icon-gallery-post.png" alt="Ipsum" >
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div class="view view-first">
-                                    <img src="images/content/post-2-2.jpg" alt="Ipsum" >
-                                    <div class="mask"></div>	
-                                    <div class="abs">
-                                        <a href="images/content/post-2-2.jpg" class="lightbox zoom info"></a><a href="blog-single.html" class="link info"></a>
+
+                    <!-- AUTHOR -->
+                    <div class="author-comment content-container-white m-bot-25">
+                        <div class="author-avatar">
+                            <img alt="" src="images/content/avatar-1.png">
+                        </div>
+                        <div class="comment-head">
+                            <div class="author-name"><a href="#">John Doe</a></div>
+                        </div>	
+                        <div class="author-text">
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum iaculis cursus. Mauris dignissim condimentum metus a laoreet. Mauris elementum nulla quis orci placerat eleifend. Donec at velit vitae augue luctus suscipit ac ac elit. </p>
+                        </div>
+                    </div>
+                    <!-- COMMENTS all-->
+                    <div class="caption-container-main m-bot-30">
+                        <div class="caption-text-container"><span class="bold">5</span> COMMENTS</div>
+                        <div class="content-container-white caption-bg "></div>
+                    </div>		
+                    <!-- COMMENTS -->
+                    <div class="comment-list">
+
+                        <ol>
+
+                            <li class="comment">
+                                <div class="single-comment">
+                                    <div class="comment-avatar">
+                                        <img alt="" src="images/content/avatar-1.png">
+                                    </div>
+                                    <div class="comment-head clearfix">
+                                        <div class="comment-name left"><a href="#">John Doe</a></div>
+                                        <div class="right">
+                                            <span class="comment-desc">15 May 2012 at 10:10</span>
+                                            <span class="comment-reply"><a href="#">Reply</a></span>
+                                        </div>  
                                     </div>	
-                                </div>
-                            </div>	
-                            <div class="blog-item-caption-container">
-                                <a class="a-invert" href="blog-single.html" ><span class="bold">Sed</span> Lectus</a>
-                                <div class="lp-item-container-border clearfix">
-                                    <div class="blog-info-container">
-                                        <ul class="clearfix">
-                                            <li class="author">Admin</li>
-                                            <li class="view">16 views</li>
-                                            <li class="comment">25 Comments</li>
-                                            <li class="tag">Website Design - Responsive</li>
-                                        </ul>
+                                    <div class="comment-text ">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum iaculis cursus. Mauris dignissim condimentum metus a laoreet. Mauris elementum nulla quis orci placerat eleifend. Donec at velit vitae augue luctus suscipit ac ac elit. </p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="blog-item-text-container">
-                            <p>Luctus et ultrices posuere cubilia Curae. Donec nibh sapien, molestie quis elementum et, dignissim non ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec sed mauris lorem. Sed sit amet mauris eu purus consectetur blandit sed et lacus. Cras tellus enim, sagittis a varius faucibus, molestie in dolor. Mauris mollis adipiscing elit, in vulputate est volutpat vitae. Donec nibh sapien, molestie quis elementum et, dignissim non ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec nibh sapien, molestie quis elementum et, dignissim non ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas...</p>
+                            </li>
 
-                        </div>
-                        <div class="lp-r-m-container right">
-                            <a href="blog-single.html" class="button medium r-m-plus r-m-full">READ MORE</a>
-                        </div>
-
-                    </div>
-                    <!-- BLOG ITEM -->
-                    <div class="blog-item m-bot-35 clearfix">
-                        <div class="hover-item">
-                            <div class="clearfix">
-                                <div class="blog-item-date-inf-container left">
-                                    <div class="blog-item-date-cont">
-                                        <div class="blog-item-date">10</div>
-                                        <div class="blog-item-mounth">OCT</div>
+                            <li class="comment">					
+                                <div class="single-comment">
+                                    <div class="comment-avatar">
+                                        <img alt="" src="images/content/avatar-1.png">
                                     </div>
-                                    <div>
-                                        <div class="blog-item-category-img">
-                                            <img src="images/icon-video-post.png" alt="Ipsum" >
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="view view-first">
-                                    <img src="images/content/post-2-3.jpg" alt="Ipsum" >
-                                    <div class="mask"></div>	
-                                    <div class="abs">
-                                        <a href="images/content/post-2-3.jpg" class="lightbox zoom info"></a><a href="blog-single.html" class="link info"></a>
+                                    <div class="comment-head clearfix">
+                                        <div class="comment-name left"><a href="#">John Doe</a></div>
+                                        <div class="right">
+                                            <span class="comment-desc">15 May 2012 at 10:10</span>
+                                            <span class="comment-reply"><a href="#">Reply</a></span>
+                                        </div>  
                                     </div>	
-                                </div>
-                            </div>	
-                            <div class="blog-item-caption-container">
-                                <a class="a-invert" href="blog-single.html" ><span class="bold">Lorem</span> Ipsum</a>
-                                <div class="lp-item-container-border clearfix">
-                                    <div class="blog-info-container">
-                                        <ul class="clearfix">
-                                            <li class="author">Admin</li>
-                                            <li class="view">16 views</li>
-                                            <li class="comment">25 Comments</li>
-                                            <li class="tag">Website Design - Responsive</li>
-                                        </ul>
+                                    <div class="comment-text ">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum iaculis cursus. Mauris dignissim condimentum metus a laoreet. Mauris elementum nulla quis orci placerat eleifend. Donec at velit vitae augue luctus suscipit ac ac elit. </p>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="blog-item-text-container">
-                            <p>Luctus et ultrices posuere cubilia Curae. Donec nibh sapien, molestie quis elementum et, dignissim non ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec sed mauris lorem. Sed sit amet mauris eu purus consectetur blandit sed et lacus. Cras tellus enim, sagittis a varius faucibus, molestie in dolor. Mauris mollis adipiscing elit, in vulputate est volutpat vitae. Donec nibh sapien, molestie quis elementum et, dignissim non ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Donec nibh sapien, molestie quis elementum et, dignissim non ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas...</p>
 
-                        </div>
-                        <div class="lp-r-m-container right">
-                            <a href="blog-single.html" class="button medium r-m-plus r-m-full">READ MORE</a>
-                        </div>
+
+                                <ol class="comment-sub">
+
+                                    <li class="comment">
+
+                                        <div class="single-comment">
+                                            <div class="comment-avatar">
+                                                <img alt="" src="images/content/avatar-1.png">
+                                            </div>
+                                            <div class="comment-head clearfix">
+                                                <div class="comment-name left"><a href="#">John Doe</a></div>
+                                                <div class="right">
+                                                    <span class="comment-desc">15 May 2012 at 10:10</span>
+                                                    <span class="comment-reply"><a href="#">Reply</a></span>
+                                                </div>  
+                                            </div>	
+                                            <div class="comment-text ">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum iaculis cursus. Mauris dignissim condimentum metus a laoreet. Mauris elementum nulla quis orci placerat eleifend. Donec at velit vitae augue luctus suscipit ac ac elit. </p>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li class="comment">
+
+                                        <div class="single-comment">
+                                            <div class="comment-avatar">
+                                                <img alt="" src="images/content/avatar-1.png">
+                                            </div>
+                                            <div class="comment-head clearfix">
+                                                <div class="comment-name left"><a href="#">John Doe</a></div>
+                                                <div class="right">
+                                                    <span class="comment-desc">15 May 2012 at 10:10</span>
+                                                    <span class="comment-reply"><a href="#">Reply</a></span>
+                                                </div>  
+                                            </div>	
+                                            <div class="comment-text ">
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum iaculis cursus. Mauris dignissim condimentum metus a laoreet. Mauris elementum nulla quis orci placerat eleifend. Donec at velit vitae augue luctus suscipit ac ac elit. </p>
+                                            </div>
+                                        </div>
+
+                                    </li>
+
+                                </ol>
+                            </li>
+
+
+                            <li class="comment">
+
+                                <div class="single-comment">
+                                    <div class="comment-avatar">
+                                        <img alt="" src="images/content/avatar-1.png">
+                                    </div>
+                                    <div class="comment-head clearfix">
+                                        <div class="comment-name left"><a href="#">John Doe</a></div>
+                                        <div class="right">
+                                            <span class="comment-desc">15 May 2012 at 10:10</span>
+                                            <span class="comment-reply"><a href="#">Reply</a></span>
+                                        </div>  
+                                    </div>	
+                                    <div class="comment-text ">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum iaculis cursus. Mauris dignissim condimentum metus a laoreet. Mauris elementum nulla quis orci placerat eleifend. Donec at velit vitae augue luctus suscipit ac ac elit. </p>
+                                    </div>
+                                </div>
+
+                            </li>
+
+                        </ol>
 
                     </div>
-                    <!-- PAGINATION -->
-                    <div class="pagination-1-container ">
-                        <ul class="pagination-1">
-                            <li>
-                                <a class="pag-prev" href="#"></a>
-                            </li>
-                            <li>
-                                <a class="pag-current" href="#">1</a>
-                            </li>
-                            <li>
-                                <a href="#">2</a>
-                            </li>
-                            <li>
-                                <a href="#">3</a>
-                            </li>
-                            <li>
-                                <a class="pag-next" href="#"></a>
-                            </li>
-                        </ul>
+                    <!-- LEAVE A COMMENT -->	
+
+                    <div class="caption-container-main m-bot-30">
+                        <div class="caption-text-container"><span class="bold">LEAVE</span> A COMMENT</div>
+                        <div class="content-container-white caption-bg "></div>
                     </div>
+                    <div class="leave-comment-container">
+                        <form action="#" id="comment-form" method="post" class="clearfix">			
+                            <fieldset class="field-1-2-comment left">
+                                <label>Name</label>
+                                <input type="text" name="name" id="Myname" onblur="if (this.value == '')
+                                            this.value = 'Your name...';" onfocus="if (this.value == 'Your name...')
+                                                        this.value = '';" value="Your name..." class="text requiredField m-bot-20" >
+                            </fieldset >
+                            <fieldset class="field-1-2-comment left">
+                                <label>Email</label>	
+                                <input type="text" name="email" id="myemail"   onblur="if (this.value == '')
+                                            this.value = 'Your email...';" onfocus="if (this.value == 'Your email...')
+                                                        this.value = '';" value="Your email..."  class="text requiredField email m-bot-20" >
+                            </fieldset>
+                            <fieldset class="field-1-1-comment left">
+                                <label>Message</label>
+                                <textarea name="message" id="Mymessage" rows="5" cols="30" class="text requiredField" onblur="if (this.value == '')
+                                            this.value = 'Your message...';" onfocus="if (this.value == 'Your message...')
+                                                        this.value = '';"   >Your message...</textarea>
+                            </fieldset>
+                            <fieldset class="right m-t-min-1">
+                                <input name="Mysubmitted" id="Mysubmitted" value="SEND" class="button medium" type="submit" >
+                            </fieldset>
+                        </form>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
 
                 <!-- SIDEBAR -->
