@@ -234,11 +234,29 @@ and open the template in the editor.
             
             $name = $author->get("name");
             $code = $unit->get("code");
+            
             //array:
             $imageArray = $result->get("mediaFiles");
-            $image1 = $imageArray[0];
-            $url = $image1->getURL();
+            //$image1 = $imageArray[0];
+            //$url = $image1->getURL();
             
+            $imageCount = count($imageArray);
+            
+            for($x=0; $x < $imageCount; $x++)
+            {
+                $imageTag = "<#I#M#A#G#E#>" . $x . "</#I#M#A#G#E#><#T#E#X#T#></#T#E#X#T#>";
+                $imageUrl = $imageArray[$x]->getURL();
+                $imageUrlTag = "<br/><img src='" . $imageUrl . "'/><br/>";
+                $content = str_replace($imageTag, $imageUrlTag, $content);
+                //echo $content;
+            }
+//            $x =0;
+//            $imageTag = "<#I#M#A#G#E#>" . $x . "</#I#M#A#G#E#>";
+//                $imageUrl = $imageArray[$x]->getURL();
+//                $imageUrlTag = "<img src='" . $imageUrl . "'/>";
+//                $content = str_replace($imageTag, $imageUrlTag, $content);
+                
+                
             $postID = $result->getObjectId();
 //            echo $url;
             
@@ -272,9 +290,9 @@ and open the template in the editor.
                                 </div>
                                 <div class="blog-item-text-container">
                                     <p><?php echo $content; 
-                                    echo "<img src =\"";
-                                    echo $url;
-                                    echo "\"></img>";
+                                    //echo "<img src =\"";
+                                    //echo $url;
+                                    //echo "\"></img>";
                                     ?></p>
                                     
 
